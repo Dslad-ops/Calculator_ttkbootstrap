@@ -1,20 +1,16 @@
 import ttkbootstrap as tb
 from  tkinter import *
 from calculator_functions_main import *
-from button_label_sci import ButtonsSci
+from calculator_functions_sci import *
+
 
 class Buttons():
-    def __init__(self) -> None:
-        self.number_list =[]
-        self.operation_list = []
-        self.number_calclulate = []
-        self.operator = None
-        self.result = None
-        self.number = 0
-        self.memory_store = None
-        self.show_number = None
-        self.buttons_sci = ButtonsSci()
-       
+    def __init__(self, master = None, label_down=None, label_up=None, variables = None) -> None:
+        self.master = master
+        self.variables = variables
+        self.label_down_ = label_down
+        self.label_up_ = label_up
+        
         
     def number_return(self, number):
         number_return_module(self, number)   
@@ -34,11 +30,15 @@ class Buttons():
     def equal(self, ):
         equal_module(self)
     
-    def memory(self, operation):
-        memory_module(self, operation)
+    def special(self, operation):
+        special_module(self, operation)
+        
+    def trig_menu(self, operation):
+        trig_menu_module(self, operation)
 
         
-    def number_buttons(self):
+    def number_buttons(self, master):
+        #Creating buttons
         self.x = 1
         for i in range(3):
             for j in range(3):
@@ -56,27 +56,10 @@ class Buttons():
         self.delete_button.grid(column = 0, row = 8, sticky = 'nsew', padx = 10, pady = 10, rowspan = 1, columnspan = 1)
         
         self.button_dot = tb.Button(bootstyle = 'primary', padding = 10, text = '.', command = lambda: self.number_return('.'))
-        self.button_dot.grid(column = 2, row = 8, sticky = 'nsew', padx = 10, pady = 10, rowspan = 1, columnspan = 1)
-    
-    def label_frame_for_numbers(self):
-        self.label_frame = tb.Labelframe( style = 'warning') 
-        self.label_frame.grid(column = 0, row = 0, columnspan = 5, rowspan = 2, sticky = 'nsew', padx = 5, pady = 5)   
-        
-    def label_down(self):
-        self.label_down_ = tb.Label(
-                                  text =0,
-                                  font = ('sans-serif', 12),
-                                  )
-        self.label_down_.grid(column = 0, row = 1, columnspan = 5, sticky = 'nsew', padx = 10, pady = 10)
-        
-    def label_up(self):
-        self.label_up_= tb.Label(
-                                  text = '', 
-                                  font = ('sans-serif', 12),
-                                  )
-        self.label_up_.grid(column = 0, row = 0, columnspan = 5, sticky = 'nsew', padx = 10, pady = 10)
-        
-    def operation_buttons(self):
+        self.button_dot.grid(column = 2, row = 8, sticky = 'nsew', padx = 10, pady = 10, rowspan = 1, columnspan = 1)  
+  
+    def operation_buttons(self, master):
+        #Creating buttons
         operator_list = [ '+', '-', 'x', '/', ]
         for i in range(4):
             self.button_operator = tb.Button(style = 'info', 
@@ -99,25 +82,13 @@ class Buttons():
                                              command = self.equal)
         self.button_equal.grid(column = 3, row = 8, sticky = 'nsew', padx = 10, pady = 10, rowspan = 1, columnspan = 1 )
         
-    def special_buttons(self):
-        operator_list = ['M+', 'M-', 'MR',]
-        for i in range(3):
-            self.button_memory = tb.Button(style = 'info', 
-                                             padding = 10, 
-                                             text = f'{operator_list[i]}', 
-                                             command = lambda x=operator_list[i]:self.memory(x))
-            self.button_memory.grid(column = i, row = 4, sticky = 'nsew', padx = 10, pady = 10, rowspan = 1, columnspan = 1) 
-        
-            self.button_special = tb.Button(style = 'success', 
-                                            padding = 10, 
-                                            text = '+/-', 
-                                            command = self.special('+/-'))
-            self.button_special.grid(column = 3 , row = 4, sticky = 'nsew', padx = 10, pady = 10, rowspan = 1, columnspan = 1)
+
         
         self.trig = tb.Menubutton(bootstyle = 'danger', text = 'Trig')
         self.trig.grid(column = 4, row = 4, sticky = 'nsew', padx = 10, pady = 10, rowspan = 1, columnspan = 1)
         self.menu_data = tb.Menu(self.trig)
         item_var = StringVar()
-        for x in ['sin', 'cos', 'tan', 'cotan']:
-            self.menu_data.add_radiobutton(label = x, variable = item_var, command = lambda x: self.trig_menu(x))
+        operator_list = ['sin', 'cos', 'tan', 'cotan']
+        for i in range(4):
+            self.menu_data.add_radiobutton(label = f'{operator_list[i]}', variable = item_var, command = lambda x=operator_list[i]: self.trig_menu(x))
         self.trig['menu'] = self.menu_data
